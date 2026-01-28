@@ -142,31 +142,38 @@
                                     <input name="aboutImage" type="file" accept="image/*">
                                     <div class="muted" id="aboutImageHint"></div>
                                 </div>
-                                <div style="border-top:1px solid #eee; margin-top:1rem; padding-top:1rem;">
-                                    <h4 style="margin-bottom:0.5rem;">Достижения</h4>
-                                    <form id="achievementForm">
-                                        <div class="field">
-                                            <label>Заголовок</label>
-                                            <input name="title" required>
-                                        </div>
-                                        <div class="field">
-                                            <label>Текст</label>
-                                            <input name="body" required>
-                                        </div>
-                                        <div class="field">
-                                            <label>Порядок сортировки</label>
-                                            <input name="sort_order" type="number" value="0">
-                                        </div>
-                                        <button class="btn btn-secondary btn-sm" type="submit">Добавить</button>
-                                        <div id="achMsg" class="msg"></div>
-                                    </form>
-                                    <div id="achievementsList" class="list"></div>
-                                </div>
                             </div>
                         </div>
                         <button class="btn btn-primary" type="submit">Сохранить блок</button>
                         <div id="aboutMsg" class="msg"></div>
                     </form>
+
+                    <div style="border-top:1px solid #eee; margin-top:1.5rem; padding-top:1rem;">
+                        <h4 style="margin-bottom:0.5rem;">Достижения</h4>
+                        <form id="achievementForm">
+                            <div class="row">
+                                <div>
+                                    <div class="field">
+                                        <label>Заголовок</label>
+                                        <input name="title" required>
+                                    </div>
+                                    <div class="field">
+                                        <label>Текст</label>
+                                        <input name="body" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="field">
+                                        <label>Порядок сортировки</label>
+                                        <input name="sort_order" type="number" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" type="submit">Добавить</button>
+                            <div id="achMsg" class="msg"></div>
+                        </form>
+                        <div id="achievementsList" class="list"></div>
+                    </div>
                 </div>
 
                 <div id="tab-books" class="tabpane hidden" style="margin-top:1rem;">
