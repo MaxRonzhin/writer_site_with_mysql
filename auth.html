@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход / Регистрация</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .auth-page { padding: 120px 0 60px; background: var(--bg-light); min-height: 100vh; }
+        .auth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .card { background: white; border-radius: 16px; box-shadow: var(--shadow); padding: 1.5rem; }
+        .card h2 { margin-bottom: 1rem; }
+        .field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+        .field input { padding: 0.9rem 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; }
+        .hint { color: var(--text-light); font-size: 0.95rem; }
+        .msg { margin-top: 0.75rem; font-size: 0.95rem; }
+        .msg.ok { color: #0a7a2f; }
+        .msg.err { color: #b00020; }
+        .top-links { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        @media (max-width: 900px) { .auth-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><a href="index.html" style="text-decoration:none;color:inherit;">Автор</a></div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Главная</a></li>
+                <li><a href="index.html#books">Книги</a></li>
+                <li><a href="index.html#about">Об авторе</a></li>
+                <li><a href="index.html#reviews">Отзывы</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="auth-page">
+        <div class="container">
+            <div class="top-links">
+                <p class="hint">После входа администратор увидит ссылку на админ-панель.</p>
+                <a id="adminLink" class="btn btn-secondary" href="admin.html" style="display:none;">Админ-панель</a>
+            </div>
+            <div class="auth-grid">
+                <div class="card">
+                    <h2>Вход</h2>
+                    <form id="loginForm">
+                        <div class="field">
+                            <label for="loginEmail">Email</label>
+                            <input id="loginEmail" type="email" required placeholder="you@example.com">
+                        </div>
+                        <div class="field">
+                            <label for="loginPassword">Пароль</label>
+                            <input id="loginPassword" type="password" required placeholder="••••••••">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Войти</button>
+                        <div id="loginMsg" class="msg"></div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h2>Регистрация</h2>
+                    <form id="registerForm">
+                        <div class="field">
+                            <label for="regName">Имя</label>
+                            <input id="regName" type="text" required placeholder="Ваше имя">
+                        </div>
+                        <div class="field">
+                            <label for="regEmail">Email</label>
+                            <input id="regEmail" type="email" required placeholder="you@example.com">
+                        </div>
+                        <div class="field">
+                            <label for="regPassword">Пароль (минимум 6 символов)</label>
+                            <input id="regPassword" type="password" required placeholder="••••••••">
+                        </div>
+                        <button class="btn btn-primary" type="submit">Создать аккаунт</button>
+                        <div id="registerMsg" class="msg"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="auth.js"></script>
+</body>
+</html>
+

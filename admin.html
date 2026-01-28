@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-page { padding: 120px 0 60px; background: var(--bg-light); min-height: 100vh; }
+        .panel { background: white; border-radius: 16px; box-shadow: var(--shadow); padding: 1.5rem; }
+        .admin-top { display:flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .tabs { display:flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tab { padding: 0.6rem 1rem; border-radius: 999px; border: 1px solid #ddd; background: white; cursor:pointer; }
+        .tab.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+        .row { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .field { display:flex; flex-direction:column; gap: 0.4rem; margin-bottom: 0.9rem; }
+        .field input, .field textarea { padding: 0.9rem 1rem; border: 1px solid #ddd; border-radius: 12px; font-size: 1rem; }
+        .field textarea { min-height: 120px; resize: vertical; }
+        .muted { color: var(--text-light); }
+        .msg { margin-top: 0.75rem; font-size: 0.95rem; }
+        .msg.ok { color: #0a7a2f; }
+        .msg.err { color: #b00020; }
+        .list { display:flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
+        .item { border: 1px solid #eee; border-radius: 12px; padding: 0.9rem; background: #fff; display:flex; justify-content: space-between; gap: 1rem; align-items: flex-start; }
+        .item h4 { margin-bottom: 0.25rem; }
+        .item-actions { display:flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+        .btn-sm { padding: 0.55rem 0.9rem; font-size: 0.9rem; }
+        .danger { background: #b00020; color: #fff; }
+        .danger:hover { background: #8e001a; }
+        .hidden { display:none; }
+        @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand"><a href="index.html" style="text-decoration:none;color:inherit;">Автор</a></div>
+            <ul class="nav-menu">
+                <li><a href="index.html#home">Главная</a></li>
+                <li><a href="index.html#books">Книги</a></li>
+                <li><a href="index.html#about">Об авторе</a></li>
+                <li><a href="index.html#reviews">Отзывы</a></li>
+                <li><a href="auth.html">Вход</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="admin-page">
+        <div class="container">
+            <div class="panel">
+                <div class="admin-top">
+                    <div>
+                        <h2 style="margin-bottom:0.25rem;">Админ-панель</h2>
+                        <div id="whoami" class="muted"></div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                        <a class="btn btn-secondary btn-sm" href="index.html" style="padding:0.6rem 1rem;">Открыть сайт</a>
+                        <button id="logoutBtn" class="btn btn-secondary btn-sm" type="button" style="padding:0.6rem 1rem;">Выйти</button>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab active" data-tab="cover">Обложка</button>
+                    <button class="tab" data-tab="about">Об авторе</button>
+                    <button class="tab" data-tab="books">Книги</button>
+                    <button class="tab" data-tab="reviews">Отзывы</button>
+                    <button class="tab" data-tab="footer">Футер</button>
+                </div>
+
+                <div id="globalMsg" class="msg"></div>
+
+                <div id="tab-cover" class="tabpane" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Блок «Обложка»</h3>
+                    <form id="coverForm">
+                        <div class="row">
+                            <div>
+                                <div class="field">
+                                    <label>Имя автора</label>
+                                    <input name="author_name" required>
+                                </div>
+                                <div class="field">
+                                    <label>Подзаголовок</label>
+                                    <input name="subtitle" required>
+                                </div>
+                                <div class="field">
+                                    <label>Описание</label>
+                                    <textarea name="description" required></textarea>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="field">
+                                    <label>Фото автора (файл)</label>
+                                    <input name="authorPhoto" type="file" accept="image/*">
+                                    <div class="muted" id="coverPhotoHint"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="field">
+                                        <label>Стат: Книг</label>
+                                        <input name="stat_books" required placeholder="15+">
+                                    </div>
+                                    <div class="field">
+                                        <label>Стат: Читателей</label>
+                                        <input name="stat_readers" required placeholder="100K+">
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label>Стат: Рейтинг</label>
+                                    <input name="stat_rating" required placeholder="4.8">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Сохранить</button>
+                        <div id="coverMsg" class="msg"></div>
+                    </form>
+                </div>
+
+                <div id="tab-about" class="tabpane hidden" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Блок «Об авторе»</h3>
+                    <form id="aboutForm">
+                        <div class="row">
+                            <div>
+                                <div class="field">
+                                    <label>Заголовок</label>
+                                    <input name="title" required>
+                                </div>
+                                <div class="field">
+                                    <label>Параграф 1</label>
+                                    <textarea name="paragraph_1" required></textarea>
+                                </div>
+                                <div class="field">
+                                    <label>Параграф 2</label>
+                                    <textarea name="paragraph_2" required></textarea>
+                                </div>
+                                <div class="field">
+                                    <label>Параграф 3</label>
+                                    <textarea name="paragraph_3" required></textarea>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="field">
+                                    <label>Изображение (файл)</label>
+                                    <input name="aboutImage" type="file" accept="image/*">
+                                    <div class="muted" id="aboutImageHint"></div>
+                                </div>
+                                <div style="border-top:1px solid #eee; margin-top:1rem; padding-top:1rem;">
+                                    <h4 style="margin-bottom:0.5rem;">Достижения</h4>
+                                    <form id="achievementForm">
+                                        <div class="field">
+                                            <label>Заголовок</label>
+                                            <input name="title" required>
+                                        </div>
+                                        <div class="field">
+                                            <label>Текст</label>
+                                            <input name="body" required>
+                                        </div>
+                                        <div class="field">
+                                            <label>Порядок сортировки</label>
+                                            <input name="sort_order" type="number" value="0">
+                                        </div>
+                                        <button class="btn btn-secondary btn-sm" type="submit">Добавить</button>
+                                        <div id="achMsg" class="msg"></div>
+                                    </form>
+                                    <div id="achievementsList" class="list"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Сохранить блок</button>
+                        <div id="aboutMsg" class="msg"></div>
+                    </form>
+                </div>
+
+                <div id="tab-books" class="tabpane hidden" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Книги</h3>
+                    <form id="bookForm">
+                        <input type="hidden" name="id">
+                        <div class="row">
+                            <div>
+                                <div class="field"><label>Название</label><input name="title" required></div>
+                                <div class="field"><label>Жанр</label><input name="genre" required></div>
+                                <div class="field"><label>Описание</label><textarea name="description" required></textarea></div>
+                            </div>
+                            <div>
+                                <div class="field"><label>Рейтинг (0..5)</label><input name="rating" type="number" step="0.1" min="0" max="5" value="0"></div>
+                                <div class="field"><label>Порядок сортировки</label><input name="sort_order" type="number" value="0"></div>
+                                <div class="field"><label>Обложка (файл)</label><input name="cover" type="file" accept="image/*"><div id="bookCoverHint" class="muted"></div></div>
+                            </div>
+                        </div>
+                        <button id="bookSubmit" class="btn btn-primary" type="submit">Добавить</button>
+                        <button id="bookCancel" class="btn btn-secondary" type="button" style="display:none;">Отмена</button>
+                        <div id="bookMsg" class="msg"></div>
+                    </form>
+                    <div id="booksList" class="list"></div>
+                </div>
+
+                <div id="tab-reviews" class="tabpane hidden" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Отзывы</h3>
+                    <form id="reviewForm">
+                        <input type="hidden" name="id">
+                        <div class="row">
+                            <div>
+                                <div class="field"><label>Имя</label><input name="reviewer_name" required></div>
+                                <div class="field"><label>Город</label><input name="reviewer_location" required></div>
+                                <div class="field"><label>О книге (название)</label><input name="book_title" required></div>
+                            </div>
+                            <div>
+                                <div class="field"><label>Рейтинг (1..5)</label><input name="rating" type="number" min="1" max="5" value="5" required></div>
+                                <div class="field"><label>Порядок сортировки</label><input name="sort_order" type="number" value="0"></div>
+                                <div class="field"><label>Аватар (файл)</label><input name="avatar" type="file" accept="image/*"><div id="reviewAvatarHint" class="muted"></div></div>
+                            </div>
+                        </div>
+                        <div class="field"><label>Текст отзыва</label><textarea name="body" required></textarea></div>
+                        <button id="reviewSubmit" class="btn btn-primary" type="submit">Добавить</button>
+                        <button id="reviewCancel" class="btn btn-secondary" type="button" style="display:none;">Отмена</button>
+                        <div id="reviewMsg" class="msg"></div>
+                    </form>
+                    <div id="reviewsList" class="list"></div>
+                </div>
+
+                <div id="tab-footer" class="tabpane hidden" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Футер: контакты и соцсети</h3>
+                    <form id="footerForm">
+                        <div class="row">
+                            <div>
+                                <div class="field"><label>Email</label><input name="contact_email" type="email" required></div>
+                                <div class="field"><label>Телефон</label><input name="contact_phone" required></div>
+                                <div class="field"><label>Текст копирайта</label><input name="copyright_text" required></div>
+                            </div>
+                            <div>
+                                <div class="field"><label>VK: текст</label><input name="vk_label" required></div>
+                                <div class="field"><label>VK: ссылка</label><input name="vk_url" required placeholder="https://... или #"></div>
+                                <div class="field"><label>TG: текст</label><input name="tg_label" required></div>
+                                <div class="field"><label>TG: ссылка</label><input name="tg_url" required placeholder="https://t.me/... или #"></div>
+                                <div class="field"><label>IG: текст</label><input name="ig_label" required></div>
+                                <div class="field"><label>IG: ссылка</label><input name="ig_url" required placeholder="https://... или #"></div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Сохранить футер</button>
+                        <div id="footerMsg" class="msg"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="admin.js"></script>
+</body>
+</html>
+

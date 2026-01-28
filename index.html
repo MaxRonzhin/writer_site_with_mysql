@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Название Автора - Писатель</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container">
+            <div id="navBrand" class="nav-brand">Автор</div>
+            <ul class="nav-menu">
+                <li><a href="#home">Главная</a></li>
+                <li><a href="#books">Книги</a></li>
+                <li><a href="#about">Об авторе</a></li>
+                <li><a href="#reviews">Отзывы</a></li>
+                <li><a href="auth.html">Вход</a></li>
+            </ul>
+            <button class="nav-toggle" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Блок обложка с описанием автора -->
+    <section id="home" class="hero">
+        <div class="hero-background"></div>
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-image">
+                    <div class="author-photo">
+                        <img id="heroAuthorPhoto" src="https://via.placeholder.com/400x500/8B7355/FFFFFF?text=Автор" alt="Фото автора">
+                    </div>
+                </div>
+                <div class="hero-text">
+                    <h1 id="heroAuthorName" class="hero-title">Имя Автора</h1>
+                    <p id="heroSubtitle" class="hero-subtitle">Писатель, автор бестселлеров</p>
+                    <p id="heroDescription" class="hero-description"></p>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span id="statBooks" class="stat-number">15+</span>
+                            <span class="stat-label">Книг</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="statReaders" class="stat-number">100K+</span>
+                            <span class="stat-label">Читателей</span>
+                        </div>
+                        <div class="stat-item">
+                            <span id="statRating" class="stat-number">4.8</span>
+                            <span class="stat-label">Рейтинг</span>
+                        </div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#books" class="btn btn-primary">Мои книги</a>
+                        <a href="#about" class="btn btn-secondary">Узнать больше</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок книги с каруселью -->
+    <section id="books" class="books-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Мои книги</h2>
+                <p class="section-subtitle">Откройте для себя мир моих произведений</p>
+            </div>
+            <div class="books-carousel-wrapper">
+                <button class="carousel-btn carousel-btn-prev" aria-label="Предыдущая книга">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <div class="books-carousel">
+                    <div id="booksTrack" class="books-track"></div>
+                </div>
+                <button class="carousel-btn carousel-btn-next" aria-label="Следующая книга">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="carousel-dots"></div>
+        </div>
+    </section>
+
+    <!-- Блок об авторе -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-image">
+                    <img id="aboutImage" src="https://via.placeholder.com/500x600/8B7355/FFFFFF?text=Автор" alt="Фото автора">
+                </div>
+                <div class="about-text">
+                    <h2 id="aboutTitle" class="section-title">Об авторе</h2>
+                    <div class="about-description">
+                        <p id="aboutP1"></p>
+                        <p id="aboutP2"></p>
+                        <p id="aboutP3"></p>
+                    </div>
+                    <div id="aboutAchievements" class="about-achievements"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Блок отзывы читателей -->
+    <section id="reviews" class="reviews-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Отзывы читателей</h2>
+                <p class="section-subtitle">Что говорят о моих книгах</p>
+            </div>
+            <div id="reviewsGrid" class="reviews-grid"></div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Email: <span id="footerEmail">author@example.com</span></p>
+                    <p>Телефон: <span id="footerPhone">+7 (XXX) XXX-XX-XX</span></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Социальные сети</h3>
+                    <div class="social-links">
+                        <a id="footerVk" href="#" aria-label="ВКонтакте">VK</a>
+                        <a id="footerTg" href="#" aria-label="Telegram">TG</a>
+                        <a id="footerIg" href="#" aria-label="Instagram">IG</a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Подписка</h3>
+                    <p>Подпишитесь на новости о новых книгах</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Ваш email" required>
+                        <button type="submit" class="btn btn-primary">Подписаться</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p id="footerCopyright">&copy; 2024 [Имя Автора]. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
