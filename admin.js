@@ -119,6 +119,17 @@ async function saveAbout(e) {
   }
 }
 
+function resetAchievementForm() {
+  const form = document.getElementById('achievementForm');
+  if (!form) return;
+  form.reset();
+  if (form.elements.id) form.elements.id.value = '';
+  const submit = document.getElementById('achSubmit');
+  const cancel = document.getElementById('achCancel');
+  if (submit) submit.textContent = 'Добавить';
+  if (cancel) cancel.style.display = 'none';
+}
+
 function renderAchievements(items) {
   const list = document.getElementById('achievementsList');
   if (!list) return;
@@ -137,15 +148,20 @@ function renderAchievements(items) {
         <button class="btn btn-secondary btn-sm danger" data-act="del">Удалить</button>
       </div>
     `;
-    el.querySelector('[data-act="edit"]').addEventListener('click', async () => {
-      const title = prompt('Заголовок', a.title);
-      if (title === null) return;
-      const body = prompt('Текст', a.body);
-      if (body === null) return;
-      const sort_order = prompt('sort_order', String(a.sort_order));
-      if (sort_order === null) return;
-      await apiJson(`/api/admin/achievements/${a.id}`, 'PUT', { title, body, sort_order: Number(sort_order) || 0 });
-      await loadAbout();
+    el.querySelector('[data-act="edit"]').addEventListener('click', () => {
+      const form = document.getElementById('achievementForm');
+      if (!form) return;
+      resetAchievementForm();
+      if (form.elements.id) form.elements.id.value = a.id;
+      form.elements.title.value = a.title || '';
+      form.elements.body.value = a.body || '';
+      form.elements.sort_order.value = String(a.sort_order ?? 0);
+      const submit = document.getElementById('achSubmit');
+      const cancel = document.getElementById('achCancel');
+      if (submit) submit.textContent = 'Сохранить';
+      if (cancel) cancel.style.display = 'inline-block';
+      const rect = form.getBoundingClientRect();
+      window.scrollTo({ top: rect.top + window.scrollY - 100, behavior: 'smooth' });
     });
     el.querySelector('[data-act="del"]').addEventListener('click', async () => {
       if (!confirm('Удалить достижение?')) return;
@@ -156,21 +172,26 @@ function renderAchievements(items) {
   });
 }
 
-async function addAchievement(e) {
+async function saveAchievement(e) {
   e.preventDefault();
   const form = document.getElementById('achievementForm');
   const msg = document.getElementById('achMsg');
   setMsg(msg, '', true);
+  const id = form.elements.id?.value;
   const title = form.elements.title.value.trim();
   const body = form.elements.body.value.trim();
   const sort_order = Number(form.elements.sort_order.value || 0);
   try {
-    await apiJson('/api/admin/achievements', 'POST', { title, body, sort_order });
-    form.reset();
-    setMsg(msg, 'Добавлено.', true);
+    if (id) {
+      await apiJson(`/api/admin/achievements/${id}`, 'PUT', { title, body, sort_order });
+    } else {
+      await apiJson('/api/admin/achievements', 'POST', { title, body, sort_order });
+    }
+    resetAchievementForm();
+    setMsg(msg, 'Сохранено.', true);
     await loadAbout();
   } catch {
-    setMsg(msg, 'Ошибка добавления.', false);
+    setMsg(msg, 'Ошибка сохранения.', false);
   }
 }
 
@@ -373,7 +394,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('coverForm')?.addEventListener('submit', saveCover);
   document.getElementById('aboutForm')?.addEventListener('submit', saveAbout);
-  document.getElementById('achievementForm')?.addEventListener('submit', addAchievement);
+  document.getElementById('achievementForm')?.addEventListener('submit', saveAchievement);
+  document.getElementById('achCancel')?.addEventListener('click', resetAchievementForm);
 
   document.getElementById('bookForm')?.addEventListener('submit', saveBook);
   document.getElementById('bookCancel')?.addEventListener('click', resetBookForm);

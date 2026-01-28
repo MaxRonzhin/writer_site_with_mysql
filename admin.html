@@ -152,6 +152,7 @@
                         <h4 style="margin-bottom:0.5rem;">Достижения</h4>
                         <form id="achievementForm">
                             <div class="row">
+                                <input type="hidden" name="id">
                                 <div>
                                     <div class="field">
                                         <label>Заголовок</label>
@@ -169,7 +170,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class="btn btn-secondary btn-sm" type="submit">Добавить</button>
+                            <button id="achSubmit" class="btn btn-secondary btn-sm" type="submit">Добавить</button>
+                            <button id="achCancel" class="btn btn-secondary btn-sm" type="button" style="display:none;">Отмена</button>
                             <div id="achMsg" class="msg"></div>
                         </form>
                         <div id="achievementsList" class="list"></div>
