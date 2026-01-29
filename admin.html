@@ -40,7 +40,7 @@
                 <li><a href="index.html#books">Книги</a></li>
                 <li><a href="index.html#about">Об авторе</a></li>
                 <li><a href="index.html#reviews">Отзывы</a></li>
-                <li><a href="auth.html">Вход</a></li>
+                <li id="navAuthItem"><a id="navAuthLink" href="auth.html">Вход</a></li>
             </ul>
         </div>
     </nav>
@@ -65,6 +65,7 @@
                     <button class="tab" data-tab="books">Книги</button>
                     <button class="tab" data-tab="reviews">Отзывы</button>
                     <button class="tab" data-tab="footer">Футер</button>
+                    <button class="tab" data-tab="users">Пользователи</button>
                 </div>
 
                 <div id="globalMsg" class="msg"></div>
@@ -246,6 +247,31 @@
                         <button class="btn btn-primary" type="submit">Сохранить футер</button>
                         <div id="footerMsg" class="msg"></div>
                     </form>
+                </div>
+
+                <div id="tab-users" class="tabpane hidden" style="margin-top:1rem;">
+                    <h3 style="margin-bottom:0.75rem;">Пользователи</h3>
+                    <form id="userForm">
+                        <div class="row">
+                            <div>
+                                <div class="field"><label>Имя</label><input name="name" required></div>
+                                <div class="field"><label>Email</label><input name="email" type="email" required></div>
+                            </div>
+                            <div>
+                                <div class="field"><label>Пароль</label><input name="password" type="password" required></div>
+                                <div class="field">
+                                    <label>Роль</label>
+                                    <select name="role">
+                                        <option value="user">Пользователь</option>
+                                        <option value="admin">Администратор</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Добавить пользователя</button>
+                        <div id="userMsg" class="msg"></div>
+                    </form>
+                    <div id="usersList" class="list"></div>
                 </div>
             </div>
         </div>

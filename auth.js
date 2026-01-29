@@ -16,6 +16,34 @@ function getUser() {
   }
 }
 
+function updateNavAuth() {
+  const li = document.getElementById('navAuthItem');
+  if (!li) return;
+  const u = getUser();
+  if (!u) {
+    const link = document.getElementById('navAuthLink');
+    if (link) {
+      link.textContent = 'Вход';
+      link.setAttribute('href', 'auth.html');
+    }
+    return;
+  }
+  li.innerHTML = `
+    <div class="nav-user">
+      <span class="nav-user-name">${(u.name || u.email || 'Пользователь')}</span>
+      <button type="button" class="nav-logout-btn" id="navLogoutBtn">Выход</button>
+    </div>
+  `;
+  const btn = document.getElementById('navLogoutBtn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      location.href = 'index.html';
+    });
+  }
+}
+
 function showAdminLinkIfNeeded() {
   const user = getUser();
   const link = document.getElementById('adminLink');
@@ -35,6 +63,7 @@ async function apiJson(url, body) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  updateNavAuth();
   showAdminLinkIfNeeded();
 
   const loginForm = document.getElementById('loginForm');

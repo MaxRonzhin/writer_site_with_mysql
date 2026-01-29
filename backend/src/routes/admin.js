@@ -1,5 +1,6 @@
 import express from 'express';
 import { z } from 'zod';
+import bcrypt from 'bcryptjs';
 import { query } from '../db.js';
 
 export const adminRouter = express.Router();
@@ -53,6 +54,13 @@ const footerSchema = z.object({
   ig_label: z.string().min(1).max(64),
   ig_url: z.string().min(1).max(512),
   copyright_text: z.string().min(1).max(255)
+});
+
+const adminUserSchema = z.object({
+  name: z.string().min(1).max(255),
+  email: z.string().email().max(255),
+  password: z.string().min(6).max(255),
+  role: z.enum(['user', 'admin']).default('user')
 });
 
 function fileUrl(req, field) {
@@ -279,5 +287,40 @@ adminRouter.put('/footer', async (req, res) => {
     'SELECT contact_email, contact_phone, vk_label, vk_url, tg_label, tg_url, ig_label, ig_url, copyright_text FROM footer WHERE id=1'
   );
   return res.json(rows[0]);
+});
+
+// Users (admin only)
+adminRouter.get('/users', async (_req, res) => {
+  const rows = await query('SELECT id, email, name, role, created_at FROM users ORDER BY created_at DESC');
+  return res.json(rows);
+});
+
+adminRouter.post('/users', async (req, res) => {
+  const parsed = adminUserSchema.safeParse(req.body);
+  if (!parsed.success) return res.status(400).json({ error: 'VALIDATION', details: parsed.error.flatten() });
+
+  const { name, email, password, role } = parsed.data;
+  const password_hash = await bcrypt.hash(password, 10);
+  try {
+    const result = await query(
+      'INSERT INTO users (email, name, password_hash, role) VALUES (?, ?, ?, ?)',
+      [email.toLowerCase(), name, password_hash, role]
+    );
+    const rows = await query('SELECT id, email, name, role, created_at FROM users WHERE id=?', [result.insertId]);
+    return res.json(rows[0]);
+  } catch (e) {
+    if (String(e?.code) === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ error: 'EMAIL_TAKEN' });
+    }
+    return res.status(500).json({ error: 'SERVER_ERROR' });
+  }
+});
+
+adminRouter.delete('/users/:id', async (req, res) => {
+  const id = Number(req.params.id);
+  const selfId = Number(req.user?.sub);
+  if (id === selfId) return res.status(400).json({ error: 'CANNOT_DELETE_SELF' });
+  await query('DELETE FROM users WHERE id=?', [id]);
+  return res.json({ ok: true });
 });
 

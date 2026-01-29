@@ -91,6 +91,31 @@ h1, h2, h3, h4 {
     width: 100%;
 }
 
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.nav-user-name {
+    font-weight: 500;
+}
+
+.nav-logout-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.nav-logout-btn:hover {
+    color: var(--primary-color);
+}
+
 .nav-toggle {
     display: none;
     flex-direction: column;

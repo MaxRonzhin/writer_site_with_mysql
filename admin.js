@@ -74,6 +74,27 @@ function tabSwitch(name) {
   document.getElementById(`tab-${name}`)?.classList.remove('hidden');
 }
 
+function setupHeaderAuth() {
+  const li = document.getElementById('navAuthItem');
+  if (!li) return;
+  const u = user();
+  if (!u) return;
+  li.innerHTML = `
+    <div class="nav-user">
+      <span class="nav-user-name">${escapeHtml(u.name || u.email || 'Пользователь')}</span>
+      <button type="button" class="nav-logout-btn" id="navLogoutBtnHeader">Выход</button>
+    </div>
+  `;
+  const btn = document.getElementById('navLogoutBtnHeader');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      location.href = 'auth.html';
+    });
+  }
+}
+
 async function loadCover() {
   const data = await api('/api/admin/cover');
   const form = document.getElementById('coverForm');
@@ -197,6 +218,7 @@ async function saveAchievement(e) {
 
 let booksCache = [];
 let reviewsCache = [];
+let usersCache = [];
 
 function resetBookForm() {
   const form = document.getElementById('bookForm');
@@ -301,6 +323,65 @@ async function saveFooter(e) {
   }
 }
 
+async function loadUsers() {
+  usersCache = await api('/api/admin/users');
+  renderUsers(usersCache);
+}
+
+function renderUsers(items) {
+  const list = document.getElementById('usersList');
+  if (!list) return;
+  list.innerHTML = '';
+  items.forEach((u) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `
+      <div>
+        <h4>${escapeHtml(u.name)} <span class="muted">&lt;${escapeHtml(u.email)}&gt;</span></h4>
+        <div class="muted">роль: ${escapeHtml(u.role)} · id: ${escapeHtml(String(u.id))}</div>
+      </div>
+      <div class="item-actions">
+        <button class="btn btn-secondary btn-sm danger" data-act="del">Удалить</button>
+      </div>
+    `;
+    el.querySelector('[data-act="del"]').addEventListener('click', async () => {
+      if (!confirm('Удалить этого пользователя?')) return;
+      try {
+        await api(`/api/admin/users/${u.id}`, { method: 'DELETE' });
+        await loadUsers();
+      } catch (err) {
+        const msg = document.getElementById('userMsg');
+        if (err?.error === 'CANNOT_DELETE_SELF') {
+          setMsg(msg, 'Нельзя удалить самого себя.', false);
+        } else {
+          setMsg(msg, 'Ошибка удаления пользователя.', false);
+        }
+      }
+    });
+    list.appendChild(el);
+  });
+}
+
+async function saveUser(e) {
+  e.preventDefault();
+  const form = document.getElementById('userForm');
+  const msg = document.getElementById('userMsg');
+  setMsg(msg, '', true);
+  const name = form.elements.name.value.trim();
+  const email = form.elements.email.value.trim();
+  const password = form.elements.password.value;
+  const role = form.elements.role.value || 'user';
+  try {
+    await apiJson('/api/admin/users', 'POST', { name, email, password, role });
+    form.reset();
+    setMsg(msg, 'Пользователь добавлен.', true);
+    await loadUsers();
+  } catch (err) {
+    if (err?.error === 'EMAIL_TAKEN') setMsg(msg, 'Этот email уже зарегистрирован.', false);
+    else setMsg(msg, 'Ошибка добавления пользователя.', false);
+  }
+}
+
 function renderReviews(items) {
   const list = document.getElementById('reviewsList');
   list.innerHTML = '';
@@ -372,6 +453,7 @@ async function bootstrap() {
     await loadBooks();
     await loadReviews();
     await loadFooter();
+    await loadUsers();
   } catch (err) {
     if (err?.error === 'UNAUTHORIZED' || err?.error === 'FORBIDDEN') {
       setMsg(document.getElementById('globalMsg'), 'Нет доступа. Войдите администратором.', false);
@@ -405,6 +487,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('footerForm')?.addEventListener('submit', saveFooter);
 
+  document.getElementById('userForm')?.addEventListener('submit', saveUser);
+
+  setupHeaderAuth();
   bootstrap();
 });
 

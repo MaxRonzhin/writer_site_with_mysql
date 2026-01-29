@@ -22,6 +22,43 @@ function setupNav() {
     });
 }
 
+function getAuthUser() {
+    try {
+        return JSON.parse(localStorage.getItem('auth_user') || 'null');
+    } catch {
+        return null;
+    }
+}
+
+function setupNavAuth() {
+    const li = document.getElementById('navAuthItem');
+    if (!li) return;
+    const user = getAuthUser();
+    if (!user) {
+        const link = document.getElementById('navAuthLink');
+        if (link) {
+            link.textContent = 'Вход';
+            link.setAttribute('href', 'auth.html');
+        }
+        return;
+    }
+
+    li.innerHTML = `
+        <div class="nav-user">
+            <span class="nav-user-name">${escapeHtml(user.name || user.email || 'Пользователь')}</span>
+            <button type="button" class="nav-logout-btn" id="navLogoutBtn">Выход</button>
+        </div>
+    `;
+    const btn = document.getElementById('navLogoutBtn');
+    if (btn) {
+        btn.addEventListener('click', () => {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            window.location.href = 'index.html';
+        });
+    }
+}
+
 function setupSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -400,6 +437,7 @@ function setupNavbarScroll() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     setupNav();
+    setupNavAuth();
     setupSmoothScroll();
     setupSubscribeForm();
     setupNavbarScroll();
