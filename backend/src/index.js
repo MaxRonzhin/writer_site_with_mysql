@@ -58,17 +58,24 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/auth', authRouter);
 app.use('/api/public', publicRouter);
 
-// Админ: multipart endpoints (cover/about/books/reviews)
+// Админ: условный multer - только для роутов с файлами
 app.use(
   '/api/admin',
   requireAuth,
   requireAdmin,
-  upload.fields([
-    { name: 'authorPhoto', maxCount: 1 },
-    { name: 'aboutImage', maxCount: 1 },
-    { name: 'cover', maxCount: 1 },
-    { name: 'avatar', maxCount: 1 }
-  ]),
+  (req, res, next) => {
+    // Для роутов /users не используем multer (JSON запросы)
+    if (req.path.startsWith('/users')) {
+      return next();
+    }
+    // Для остальных роутов используем multer
+    return upload.fields([
+      { name: 'authorPhoto', maxCount: 1 },
+      { name: 'aboutImage', maxCount: 1 },
+      { name: 'cover', maxCount: 1 },
+      { name: 'avatar', maxCount: 1 }
+    ])(req, res, next);
+  },
   adminRouter
 );
 
